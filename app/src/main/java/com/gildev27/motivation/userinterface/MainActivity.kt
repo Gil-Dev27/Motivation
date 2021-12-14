@@ -6,11 +6,13 @@ import androidx.appcompat.app.AppCompatActivity
 import com.gildev27.motivation.R
 import com.gildev27.motivation.infra.MotivationConstants
 import com.gildev27.motivation.infra.SecurityPreferences
+import com.gildev27.motivation.repository.Mock
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     private lateinit var mSecurityPreferences: SecurityPreferences
+    private var mPhraseFilter : Int = MotivationConstants.PHRASEFILTER.INFINITY
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,7 +23,12 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         }
 
         mSecurityPreferences = SecurityPreferences(this)
-        textName.text = mSecurityPreferences.getString(MotivationConstants.KEY.PERSON_NAME)
+
+        val name = mSecurityPreferences.getString(MotivationConstants.KEY.PERSON_NAME)
+        showName.text = "Olá, $name!"
+
+        infinity.setColorFilter(resources.getColor(R.color.colorAccent))
+        handleNewPhrase()
 
         buttonNewPhrase.setOnClickListener(this)
         infinity.setOnClickListener(this)
@@ -44,8 +51,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun handleNewPhrase() {
-
-
+        textPhrase.text = Mock().getPhrase(mPhraseFilter)
     }
 
     private fun handleFilter(id: Int) {
@@ -57,14 +63,17 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         when (id) {
             R.id.infinity -> {
                 infinity.setColorFilter(resources.getColor(R.color.colorAccent))
+                mPhraseFilter = MotivationConstants.PHRASEFILTER.INFINITY
             }
 
             R.id.smile -> {
                 smile.setColorFilter(resources.getColor(R.color.colorAccent))
+                mPhraseFilter = MotivationConstants.PHRASEFILTER.SMILE
             }
 
             R.id.sunny -> {
                 sunny.setColorFilter(resources.getColor(R.color.colorAccent))
+                mPhraseFilter = MotivationConstants.PHRASEFILTER.SUNNY
             }
         }
     }
